@@ -1,0 +1,79 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww21800\viewh11620\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs28 \cf0 These are the steps that I took in order to automatically boot into my Python Script on the Raspberry Pi 3. There are other possible ways to do this, but the general order that I want to boot on my Raspberry Pi is this:\
+\
+1) boot into LXDE desktop environment. This is the standard GUI Linux desktop service that comes on the NOOBS installation of the Pi. This is done automatically, so nothing needs to be done.\
+\
+2) Next, automatically boot into the terminal:\
+ \
+$ sudo nano ~/.config/lxsession/autostart\
+\
+at the bottom, type: @lxterminal  "control x", "y", "enter"\
+\
+3) Then, write the script, make it an executable file, and call it to run automatically at the start of a terminal window:\
+\
+$ cd ~\
+$ sudo nano NameOfAutoBootScript\
+\
+source /home/pi/.profile\
+workon cv\
+python3 NameOfPythonScript.py\
+\
+"Control X", "Y", "Enter"\
+\
+Make it an executable file:\
+\
+$ chmod +x NameOfAutoBootScript\
+\
+Call the NameOfAutoBootScript to run automatically at the start of the terminal window:\
+\
+$ sudo nano ~/.bashrc\
+\
+Scroll to the bottom and type:\
+\
+~/NameOfAutoBootScript\
+\
+\
+5) Also, I want the OpenCV display window to automatically boot without a menu bar,  title bar, and in the center of the screen. Important to note: I run my Python Display window at 640 x 480. This saves RAM space. The Pi's resolution will need to be changed to the same resolution in order to fill up the screen.\
+\
+$ sudo nano ~/.config/openbox/lxde-pi-rc.xml\
+\
+To take away menu bar for all applications, scroll down a little ways to \
+\
+<titleLayout>then delete all the letters in between</titleLayout>\
+\
+To take away title bar I can either take it away from specific applications or all applications. Scroll to the bottom and you'll see a large commented out section giving examples of how to do so. If you want to edit specific applications you will need to find out the name and class of the application. To do this you need to:\
+\
+First open and run which ever application you want to edit. Then in terminal type\
+\
+$ xprop WM_CLASS\
+\
+Then click on the window of the application that is running and the name and class will be returned in the terminal window. I wanted to edit the window displaying my OpenCV video feed. The name and class was the name I gave to the "cv2.imshow" function. It was then displayed as the title in the title bar. I named it "PANOPTICON", when I ran "xprop WM_CLASS" the class and name that was returned was "PANOPTICON". So in OpenBox, I scrolled to the bottom and typed this:\
+\
+<application  class="PANOPTICON", name="PANOPTICON">\
+	<decor>no</decor>  #this removes the title bar\
+	<position>\
+		<x>0</x>  #this  positions the window in the center of the screen\
+		<y>0</y>\
+	</position>\
+</application>\
+\
+If you want to have these changes applied to all applications:\
+\
+<application  class="*">  # Asterisk "*" is the wildcard declaring all applications. \
+	<decor>no</decor>  # this removes the title bar\
+	<position>  # this  positions the window in the center of the screen, x and y must be called. You may need to experiment for each application.		<x>0</x>  \
+		<y>0</y>\
+	</position>\
+</application>\
+\
+\
+I haven't troubleshooted it, but I'm sure you could by-pass the LXDE, terminal, and/or virtual environment. But I believe that booting through these steps allows for the most flexibility to either navigate through errors, or do whatever on the LXDE environment. \
+\
+\
+}
