@@ -11,17 +11,28 @@ at the bottom, type: @lxterminal  "control x", "y", "enter"
 3) Then, write the script, make it an executable file, and call it to run automatically at the start of a terminal window:
 
 $ cd ~
-$ sudo nano NameOfAutoBootScript
+$ sudo nano NameOfAutoBootScript.sh
 
+
+
+# Shutdown in number of minutes since it starts running. This is 10 hours.
+sudo shutdown -P 600
 source /home/pi/.profile
 workon cv
-python3 NameOfPythonScript.py
+until python3 /home/pi/NameOfPythonScript.py; do
+	echo "Are you running?..." >&2
+	sleep 1
+done
+
+# My OpenCV script returns errors half the time for reasons unknown. 
+# In order to get around this I run an "until" loop.
+# Otherwise if you're confident your script will run %100 of the time, jus type "python3 NameOfPythonScript.py"
 
 "Control X", "Y", "Enter"
 
 Make it an executable file:
 
-$ chmod +x NameOfAutoBootScript
+$ chmod +x NameOfAutoBootScript.sh
 
 Call the NameOfAutoBootScript to run automatically at the start of the terminal window:
 
@@ -29,7 +40,7 @@ $ sudo nano ~/.bashrc
 
 Scroll to the bottom and type:
 
-~/NameOfAutoBootScript
+~/NameOfAutoBootScript.sh
 
 
 5) Also, I want the OpenCV display window to automatically boot without a menu bar,  title bar, and in the center of the screen. Important to note: I run my Python Display window at 640 x 480. This saves RAM space. The Pi's resolution will need to be changed to the same resolution in order to fill up the screen.
