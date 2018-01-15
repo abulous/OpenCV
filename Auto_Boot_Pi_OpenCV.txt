@@ -14,19 +14,10 @@ $ cd ~
 $ sudo nano NameOfAutoBootScript.sh
 
 
-
-# Shutdown in number of minutes since it starts running. This is 10 hours.
-sudo shutdown -P 600
 source /home/pi/.profile
 workon cv
-until python3 /home/pi/NameOfPythonScript.py; do
-	echo "Are you running?..." >&2
-	sleep 1
-done
+python3 /home/pi/NameOfPythonScript.py
 
-# My OpenCV script returns errors half the time for reasons unknown. 
-# In order to get around this I run an "until" loop.
-# Otherwise if you're confident your script will run %100 of the time, jus type "python3 NameOfPythonScript.py"
 
 "Control X", "Y", "Enter"
 
@@ -42,6 +33,29 @@ Scroll to the bottom and type:
 
 ~/NameOfAutoBootScript.sh
 
+"Control X", "Y", "Enter"
+
+# My OpenCV script returns errors half the time for reasons unknown. 
+# In order to get around this I run an "until" loop for my script.
+# Otherwise if you're confident your script will run %100 of the time, simply bypass this part:
+# Also, I want to include a scheduled shutdown time in number of minutes since it starts running. This example is 10 hours.
+
+$ sudo nano ~/SomeOtherNameScript.sh
+
+sudo shutdown -P 600 &
+until /home/pi/NameOfAutoBootScript.sh; do
+	echo "Are you running?..." > &2
+	sleep 1
+done
+
+"Control X", "Y", "Enter"
+
+Make it an executable file:
+
+$ chmod +x SomeOtherNameScript.sh
+
+# Instead of "NameOfAutoBootScript.sh" at the bottom of your .bashrc, type ~/"SomeOtherNameScript.sh". 
+# It would be redundant to have both.
 
 5) Also, I want the OpenCV display window to automatically boot without a menu bar,  title bar, and in the center of the screen. Important to note: I run my Python Display window at 640 x 480. This saves RAM space. The Pi's resolution will need to be changed to the same resolution in order to fill up the screen.
 
