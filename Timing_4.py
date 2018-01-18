@@ -1,3 +1,5 @@
+# This script is a work in progress
+
 import numpy as np
 import cv2
 import random
