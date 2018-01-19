@@ -90,6 +90,17 @@ If you want to have these changes applied to all applications:
 	</position>
 </application>
 
+# I also want my mouse cursor turned off.
+
+$ sudo apt-get install unclutter
+$ sudo nano ~/.config/lxsession/LXDE-pi/autostart
+
+# Add this line to the bottom of the script:
+@unclutter -idle 0
+
+"CTL X", "Y", "ENTER"
+
+$ sudo reboot
 
 I haven't troubleshooted it, but I'm sure you could by-pass the LXDE, terminal, and/or virtual environment. But I believe that booting through these steps allows for the most flexibility to either navigate through errors, or do whatever on the LXDE environment. 
 
