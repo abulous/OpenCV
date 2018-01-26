@@ -6,7 +6,11 @@ These are the steps that I took in order to automatically boot into my Python Sc
  
 $ sudo nano ~/.config/lxsession/LXDE-pi/autostart
 
-at the bottom, type: @lxterminal  "control x", "y", "enter"
+at the bottom, type: 
+
+@lxterminal  
+
+"control x", "y", "enter"
 
 3) Then, write the script, make it an executable file, and call it to run automatically at the start of a terminal window:
 
