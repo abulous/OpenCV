@@ -81,6 +81,8 @@ Then click on the window of the application that is running and the name and cla
 	</position>
 </application>
 
+"ctl x", "y", "enter"
+
 If you want to have these changes applied to all applications:
 
 <application  class="*">  # Asterisk "*" is the wildcard declaring all applications. 
@@ -89,6 +91,11 @@ If you want to have these changes applied to all applications:
 		<y>0</y>
 	</position>
 </application>
+
+"ctl x", "y", "enter"
+
+# apply the changes in openbox, or you can reboot, to apply the changes
+$openbox --reconfigure
 
 # I also want my mouse cursor turned off.
 
