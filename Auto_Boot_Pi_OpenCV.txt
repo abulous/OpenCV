@@ -48,7 +48,7 @@ $ sudo nano ~/SomeOtherNameScript.sh
 
 sudo shutdown -P 600 &
 until /home/pi/NameOfAutoBootScript.sh; do
-	echo "Are you running?..." > &2
+	echo "Are you running?...">&2
 	sleep 1
 done
 
