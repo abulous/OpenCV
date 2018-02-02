@@ -1,1 +1,4 @@
-
+Well this seems to be what I want.
+After this I should be able to commit it.
+I'm not sure if I'll need to close the branch though, Or if I should leave it open.
+Git is just so complicated - powerful! but complicated.
