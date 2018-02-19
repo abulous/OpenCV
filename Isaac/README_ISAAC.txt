@@ -13,8 +13,11 @@ First commit:
 		(wont run on pi)
 
 -Streaming folder:
-	-image streaming demo "browserTest" folder (visible in browser)
 	-true image streaming
 		(pi -> network -> faster comp for img processing)
 		(server needs to be running before client)
-	-flask is another tool which can be used to stream a feed
+	-flask is another tool which can be used to stream a fee
+
+Third commit:
+
+-webcamStream uses combines basic video capture and a simple udp transfer 
