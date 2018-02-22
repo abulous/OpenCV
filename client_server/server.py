@@ -11,7 +11,7 @@ UDPSock.bind(addr)
 print("Waiting to receive messages...")
 while True:
     (data, addr) = UDPSock.recvfrom(buf)
-    print("Received message: " + data.decode()
+    print("Received message: " + data.decode('utf-8'))
     if data == "exit":
         break
 UDPSock.close()
