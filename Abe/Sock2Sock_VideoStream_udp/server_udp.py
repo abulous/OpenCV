@@ -7,7 +7,7 @@ import pickle
 import numpy as np
 import struct
 
-HOST='192.168.0.5'  # Inet_4 address for udp x.x.x.x
+HOST='xxx.xxx.x.x'  # Inet_4 address for udp x.x.x.x
 PORT=8012
 
 s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
