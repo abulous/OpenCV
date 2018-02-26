@@ -6,7 +6,7 @@ import sys
 import pickle
 import struct
 
-UDP_IP = "192.168.0.5" # Inet_4 address for udp
+UDP_IP = "xxx.xxx.x.x" # Inet_4 address for udp
 UDP_PORT = 8012
 cap=cv2.VideoCapture(0)
 cap.set(3, 640)
