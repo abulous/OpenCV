@@ -26,7 +26,8 @@ setFPS = 10
 ratio = int(FPS)/setFPS
 
 # specify port/streaming info    
-host = "127.0.0.1"
+host = "192.168.0.101"
+host.encode()
 port = 4096
 addr = (host, port)
 buf = 1024
