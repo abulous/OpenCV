@@ -10,6 +10,7 @@ from socket import *
 import numpy as np
 import cv2
 
+#host = "192.168.0.101"
 host = "127.0.0.1"
 port = 4096
 buf = 1024

@@ -27,6 +27,7 @@ try:
         image_stream.seek(0)
         # Construct a numpy array from the stream
         data = np.fromstring(image_stream.getvalue(), dtype=np.uint8)
+        print( data )
         # "Decode" the image from the array, preserving colour
         image = cv2.imdecode(data, 1)
         #show the image
