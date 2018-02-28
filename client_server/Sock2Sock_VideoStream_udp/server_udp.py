@@ -37,7 +37,7 @@ while True:
 ## effects for playing, otherwise it is boring pixelated feed with low light.
 ## more importantly these effects are built from signal processing techniques that accentuate the image in order to get desired results.
 
-    cv2.imshow('resized', blend) 
+    cv2.imshow('resized', res) 
     cv2.waitKey(4) 
 ##s.close()
 
