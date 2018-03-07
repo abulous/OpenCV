@@ -1,13 +1,17 @@
 # USAGE
-# python object_movement.py --video object_tracking_example.mp4
-# python object_movement.py
+# python track_and_send.py --video object_tracking_example.mp4
+# python track_and_send.py
 
 # import the necessary packages
 from collections import deque
 import numpy as np
 import argparse
 import imutils
+import socket
+import sys
+import pickle
 import cv2
+import struct
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -16,6 +20,18 @@ ap.add_argument("-v", "--video",
 ap.add_argument("-b", "--buffer", type=int, default=32,
 	help="max buffer size")
 args = vars(ap.parse_args())
+
+#init stuff for udp streaming
+HOST='0.0.0.0'  # Inet_4 address for udp x.x.x.x
+PORT=8012
+
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
+print ('Socket created')
+
+s.bind((HOST, PORT))
+print ('Socket bind complete')
+
+data = ""
 
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space
@@ -33,6 +49,7 @@ direction = ""
 # to the webcam
 if not args.get("video", False):
 	camera = cv2.VideoCapture(0)
+        #print("foo")
 
 # otherwise, grab a reference to the video file
 else:
@@ -41,7 +58,12 @@ else:
 # keep looping
 while True:
 	# grab the current frame
-	(grabbed, frame) = camera.read()
+	(grabbed, camImg) = camera.read()
+	gray = cv2.cvtColor(camImg, cv2.COLOR_BGR2GRAY)
+	
+	data, addr = s.recvfrom(58993) #buffer size of incoming image.
+                            #a little bigger that 57793 = 240 x 240 x 1
+	frame = pickle.loads(data)
 
 	# if we are viewing a video and we did not grab a frame,
 	# then we have reached the end of the video
@@ -81,9 +103,8 @@ while True:
 		if radius > 10:
 			# draw the circle and centroid on the frame,
 			# then update the list of tracked points
-			cv2.circle(frame, (int(x), int(y)), int(radius),
-				(0, 255, 255), 2)
-			cv2.circle(frame, center, 5, (0, 0, 255), -1)
+			#cv2.circle(camImg, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+			cv2.circle(camImg, center, 5, (0, 0, 255), -1)
 			pts.appendleft(center)
 
 	# loop over the set of tracked points
@@ -124,20 +145,24 @@ while True:
 		# otherwise, compute the thickness of the line and
 		# draw the connecting lines
 		thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-		cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
+		#cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
+		cv2.line(camImg, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
 	# show the movement deltas and the direction of movement on
 	# the frame
-	cv2.putText(frame, direction, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
-		0.65, (0, 0, 255), 3)
-	cv2.putText(frame, "dx: {}, dy: {}".format(dX, dY),
-		(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
-		0.35, (0, 0, 255), 1)
+	#cv2.putText(frame, direction, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+		#0.65, (0, 0, 255), 3)
+	#cv2.putText(frame, "dx: {}, dy: {}".format(dX, dY),
+		#(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+		#0.35, (0, 0, 255), 1)
 
 	# show the frame to our screen and increment the frame counter
 	#cv2.imshow("Frame", frame)
-	canny = cv2.Canny(frame,100, dY, 1)
-	cv2.imshow("Frame", canny)	
+	#cv2.imshow("remote fun", camImg)
+	canny = cv2.Canny(camImg,10, int(np.abs(dY)), 1)
+	blend = cv2.addWeighted(gray, np.abs(dX / 640), canny, (1 - np.abs(dX / 640)), 0)
+	#blend = cv2.addWeighted(gray, 0.5, canny, 0.5, 0)
+	cv2.imshow("remote param mods", blend)
 	key = cv2.waitKey(1) & 0xFF
 	counter += 1
 
@@ -148,3 +173,4 @@ while True:
 # cleanup the camera and close any open windows
 camera.release()
 cv2.destroyAllWindows()
+s.close()

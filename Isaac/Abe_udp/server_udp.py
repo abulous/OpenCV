@@ -21,7 +21,9 @@ data = ""
 
 i = 0
 while True:    
-    data, addr = s.recvfrom(4289) #buffer size of incoming image. a little bigger that 4096 = 64 x 64 x 1
+    #data, addr = s.recvfrom(4289) #buffer size of incoming image. a little bigger that 4096 = 64 x 64 x 1
+    #data, addr = s.recvfrom(57793) #buffer size of incoming image. a little bigger that 4096 = 64 x 64 x 1
+    data, addr = s.recvfrom(58993) #buffer size of incoming image. a little bigger that 4096 = 64 x 64 x 1
 ##    print(data)
     frame = pickle.loads(data)
     

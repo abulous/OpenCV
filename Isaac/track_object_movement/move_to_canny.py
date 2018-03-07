@@ -129,14 +129,14 @@ while True:
 	# show the movement deltas and the direction of movement on
 	# the frame
 	#cv2.putText(frame, direction, (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
-		0.65, (0, 0, 255), 3)
+		#0.65, (0, 0, 255), 3)
 	#cv2.putText(frame, "dx: {}, dy: {}".format(dX, dY),
-		(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
-		0.35, (0, 0, 255), 1)
+		#(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+		#0.35, (0, 0, 255), 1)
 
 	# show the frame to our screen and increment the frame counter
 	#cv2.imshow("Frame", frame)
-	canny = cv2.Canny(frame,10, dY, 1)
+	canny = cv2.Canny(frame,10, int(np.abs(dY)), 1)
 	cv2.imshow("Frame", canny)	
 	key = cv2.waitKey(1) & 0xFF
 	counter += 1
