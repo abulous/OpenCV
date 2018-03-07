@@ -8,7 +8,8 @@ import struct
 import time
 
 #UDP_IP = "xxx.xxx.x.x" # Inet_4 address for udp
-UDP_IP = "192.168.0.102" # Inet_4 address for udp
+#UDP_IP = "192.168.0.102" # Inet_4 address for udp
+UDP_IP = "127.0.0.1" # Inet_4 address for udp
 UDP_PORT = 8012
 cap=cv2.VideoCapture(0)
 cap.set(3, 640)
