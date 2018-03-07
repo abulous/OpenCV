@@ -1,3 +1,4 @@
+#sister program for recieve and track - use together for streaming!
 # USAGE
 # python track_and_send.py --video object_tracking_example.mp4
 # python track_and_send.py
@@ -23,10 +24,10 @@ args = vars(ap.parse_args())
 
 #init stuff for udp streaming
 HOST='0.0.0.0'  # host Inet_4 address for udp x.x.x.x
-PORT=8012
+PORT=8013
 
-UDP_IP = "192.168.0.100" # Inet_4 address for udp SENDING
-UDP_PORT = 8013
+UDP_IP = "192.168.0.102" # Inet_4 address for udp SENDING
+UDP_PORT = 8012
 
 clientsocket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
 
