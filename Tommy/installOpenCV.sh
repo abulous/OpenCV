@@ -12,7 +12,16 @@ case $resp in
 		sudo raspi-config
 		;;
 	n|N|no|No)
-		echo install complete. Please reboot
+		echo install complete.
 		;;
 esac
-
+echo restart now? y/n
+read rest
+case $rest in
+	y|Y|yes|Yes)
+		reboot
+		;;
+	n|N|no|No)
+		echo you may need to restart for changes to work.
+		;;
+esac
