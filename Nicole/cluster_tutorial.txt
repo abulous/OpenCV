@@ -1,0 +1,235 @@
+Building your own cluster with Raspberry PIs (adapted from the mighty Brett Stalbaum’s tutorial)
+
+This tutorial assumes that you have a fresh installation of Raspbian on Raspberry Pi 3 boards, and that you have them connected to a switch (or router), Access to the internet is also assumed. (Wireless on the Raspberry Pi 3 should be helpful for setup!)
+Note: This should also work for CONNECTING Pi 2 & Pi 1 nodes to a Pi 3 Master node. Have not tried using a lower model as the master. 
+
+Update the system [needs internet connection]
+
+$ sudo apt-get update
+…
+$ sudo apt-get upgrade
+
+
+Configuring the Raspberry PI
+
+$ sudo raspi-config
+
+Obviously, the first thing you want to is to set a good password, and raspi-config makes that pretty easy. The localisation options are important too, Locale, Timezone, Keyboard Layout and Wi-Fi country may all need to be set to local standards. Under raspi-config “advanced options” you will probably want to “expand filesystem”. If you are running from NOOBS, this will have already have been done and you don’t need to worry about it. 
+
+You will need to enable ssh under “interfacing options”.
+
+The “Hostname” setting makes it easy to set the system’s hostname, which is actually whatever name is in a configuration file /etc/hostname. We will defer on that for now, dealing with it in the “Configuring the Network” section.
+
+Configuring the Network
+
+One thing we are not talking about very much here is how you are connecting your PIs. It may be through ethernet cables connected with a simple layer 2 switch, some kind of managed switch, or a full blown router. Layer 2 switches require no configuration, really all they do is let machines with different MAC addresses talk to each other. At the most basic, this is all you need for a cluster! On the other hand, a router makes it possible for your devices to be on a well managed local area network, with access controls, connection to a gateway (to connect to the rest of the internet), firewall protection, etc. Another thing to note is that the Raspberry Pi only has 10/100 ethernet! This means your cluster will never be very fast, but it will at least be sufficiently fast for the slow USB based I/O and SD card read write speeds, which are within approximation of each other.
+
+
+Because the Raspberry Pi’s wired networking capabilities are a key component of a cluster, you should develop a naming plan (though this is optional, it will make organization much easier and is highly recommended). The naming plan will become important later when running actual jobs, so carefully consider it! First, each of the PIs in your cluster need a unique hostname, like rpi1, rpi2, rpi3. The way to change the hostname is simply to edit the /etc/hostname file, changing the name from “raspberrypi” to something like rpi1, for example. Using your favorite text editor (vim, nano, pico, emacs, etc)
+
+pi@raspberrypi:~ $ sudo vi /etc/hostname
+…
+
+After editing the file, reboot and you will see that your command line prompt reflects the change.
+
+pi@rpi1:~ $
+
+An important thing to know is that the hostname will also be used as the name of the particular Raspberry Pi from the perspective of the network too, as in, other Raspberry PIs in the cluster will refer to rpi1 as rpi1.
+
+Next we will edit the file /etc/hosts, which will complete the details of our network! Edit your /etc/hosts file so that it looks something like this, leaving out my #comments if you want. Before doing so, make sure to choose unique ip addresses for your pis to be recognized that are not already in your /etc/hosts file… any 198.162.1.XXX number works, you should try to keep them in order… Later in the tutorial, you will be setting the static ip address of each pi to the ones you gave them here.
+
+127.0.0.1 localhost rpi1 # local ip address and hostname of this raspberry pi
+192.168.0.101 rpi1 # network ip address and name (same) of this raspberry pi
+192.168.0.102 rpi2
+192.168.0.103 rpi3 # these are the static ips of the pi nodes to be added
+192.168.0.104 rpi4
+
+What is going on here? The /etc/hosts file associates a name and an IP address for all of the machines on the network. Much like the /etc/hostname file tells the computer what its name is, /etc/hosts file tells the computer what every computer’s name is. In fact, this modest file is the predecessor of the domain name system. Every name like rpi1 in this file is a bit like a domain name (ucsd.edu) on the internet in that it allows the lookup of an IP address. In the file above, 192.168.0.104 is the internet protocol name for the machine named rpi4, and /etc/hosts is a simple lookup table. Note that 127.0.0.1 is the IP address that every machine associates with itself, or the “localhost” IP address which always means “myself”, so don’t change this. The machine rpi1 can refer to itself as rpi1 or as localhost, but to the rest of the machines on the LAN, rpi1 is rpi1 (which is the human readable name for the network name 192.168.1.101.)
+
+
+What should rpi2’s /etc/hosts file look like? I hope you can see the pattern here and apply it to each computer in your cluster.
+
+127.0.0.1 localhost rpi2
+192.168.0.101 rpi1 # will have all the pi names on the cluster
+192.168.0.102 rpi2
+192.168.0.103 rpi3
+192.168.0.104 rpi4
+
+
+(Try to keep consistent with your router, as sometimes these addresses might change upon routers)
+
+Finally, we need to configure each Raspberry PI to have what is called a static IP address. The way that you set a static IP address varies by operating system and version. You can read more about this here if you want: https://raspberrypi.stackexchange.com/questions/37920/how-do-i-set-up-networking-wifi-static-ip-address/, particulary the “Setup a Static IP Address” section. But in short order, assuming a recent version (Raspbian stretch), you need to choose between the “dhcpcd method”, or the older /etc/network/interfaces method which involves deactivating the dhcpcd daemon (system) altogether so we can do it the old way. For a static cluster, disabling the dhcpcd system and editing /etc/network/interfaces is probably slightly better, but maybe a little more difficult to debug if something goes wrong. On the other hand, the dhcpd method which involves editing /etc/dhcpcd.conf and is super easy and the (new) standard way to work with the debian stretch/raspbian OS. In this tutorial, I’ll be showing you how to do the dhcpcd method.
+
+$ sudo vim /etc/dhcpcd.conf # or pico or emacs or what have you
+
+Scroll down and find this sample section, which should be commented out.
+
+# Example static IP configuration:
+#interface eth0
+#static ip_address=192.168.0.10/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+
+Change it by removing the # comments where necessary, and editing the file to reflect the machine you are setting up and your network. Note that in this example we are ignoring the IPv6 settings, so you can keep it commented out.
+
+# Example static IP configuration:
+interface eth0
+static ip_address=192.168.1.101/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1 8.8.8.8
+
+Upon restart, the Pi with this configuration will ask the router to be known as 192.168.1.101. If your router allows this (a switch always will) then you are good to go. Do the same for the other PIs on your network, naming them 102, 103, etc. This static ip address should match the ip addresses that you added into your /etc/hosts file in the beginning of the tutorial
+
+Note that the domain_name_servers and static_routers settings should only matter if you are actually using a router and not a simple layer 2 switch. (Because a switch knows nothing of these things.) Again, any PI on your switch can be configured as the gateway and router, but this is not covered here.
+
+Setting up ssh
+
+The API we will be using for parallel compute is MPI, or the Message Passing Interface. It requires a control computer, “the controller” node, to orchestrate the “job” (a parallel program) by passing the program to “the worker” nodes, and later collecting the resulting work. When you login with ssh, you usually provide a username and a password. But MPI has no time for this presentation of credentials, so we will provide no passkey when setting up ssh on our controller node. Essentially, “the controller” node needs to be able to login to each worker nodes automatically (no password). But what about security? We can have our automation and security too though the use of cryptographic keys, enabling each worker node to be sure that it is actually and only the the controller node that is logging into them for the purposes of distributing the workload.
+
+To set up this private/public key pair so that your controller node (rpi1 in our case) can use to log into the remaining nodes to send them parallel instructions and data, we need to 1) create a key on the controller node, and 2) distribute (copy) the public key component to each of the worker nodes.
+
+
+$ ssh-keygen -t rsa # on your master node
+This may ask you to provide a file name to hold the pass key, just press enter.
+… do not supply a passphrase here, just leave it blank, hit enter
+
+Then from the controller node, do the following for each of the client nodes. For this to work, your pis need to all be connected to the same router. If this is not working, try pinging each other to make sure they are connected (“ping rpi2”). If it’s still not working, try a reboot. If still not working, check your /etc/hosts files and make sure the ip addresses are correct, it’s super easy to make a mistake like putting 192.168.0.110 instead of 192.168.1.110, etc...
+
+$ ssh-copy-id pi@rpi2 # distribute the key to worker nodes
+$ ssh-copy-id pi@rpi3
+... 
+Etc… do for all worker nodes
+
+Setting up the Network File System (NFS) [Requires Network]
+
+Each node benefits from being able to access and edit the same files. You will want to set up a directory that will be shared amongst all the boards. Therefore, you will need an NFS (network file system) server or some other file sharing solution. If your router doesn’t have internet access, you sometimes might need to disconnect the pis from the router (just pull out the ethernet cord) so they can access the WiFi correctly to install NFS.
+First, you will need to install the libraries that will be needed on the controller node (rpi1). Install the libraries using the following command:
+$ sudo apt-get install nfs-kernel-server rpcbind isc-dhcp-server -y
+Afterwards, you need to reorganize several directories so that the system turns on at startup and hooks up the Network File System for all machines. You can do this will the following for shell iteration script. Just put it in a text file with a .sh extension and run it with
+$ sudo vim <yourfile>.sh # replace <yourfile> with any file name you want
+
+
+Write this within the file 
+for i in 2 3 4 5
+do
+     sudo mv /etc/rc$i.d/S01nfs-kernel-server /etc/rc$i.d/S21nfs-kernel-server
+     sudo ln -s /etc/init.d/rpcbind /etc/rc$i.d/S01rpcbind
+Done
+
+Make sure you wrote $i - easy to make a typo here
+Run with:
+sudo sh <yourfile>.sh
+
+
+Afterwards, you will need to tell the NFS server (rpi1 nominally, but it could be any node on the network, even a dedicated one) which directory you want to share. This is done by editing the /etc/exports file on rpi1 only, since it is the location of the directory (I usually name it “mpi”) that will be shared across each system in cluster.
+Create the directory where you will store the files you want to share with other pis (for this tutorial, I’m currently in /home/pi)
+$ sudo mkdir mpi
+
+You will want to make this directory for each one of your worker nodes, as well. Make sure they’re in the same location as the one in your controller node, for ease.
+To edit the exports file, use your favorite editors to edit /etc/exports, such as:
+$ sudo vi /etc/exports
+If this file doesn’t exist, something went wrong while installing NFS, check your connection and try again...
+Add the following line to the end of the file: 
+/home/pi/mpi *(rw,sync,no_root_squash,no_subtree_check)
+
+
+The * wildcard means “export to anyone”, so that rpi2 (192.168.0.102), rpi3, and rpi4 can all mount opi1’s /home/mpi directory. The rw specifies that it should have both read and write enabled and the sync is to keep the /home directory synchronized between the client and server.
+You will want to reboot now. 
+
+Note: the routine above (c) is only for your “controller”, which is (probably) also the one that will control the other boards using MPI libraries. The worker nodes execute MPI code at the behest of the controller, and will use the controllers file system.
+For some reason, Stretch doesn’t work too well with NFS and has a hard time running scripts over the pis when we do automatic mounting. Thus, unfortunately, we will be manually mounting the pis each time we power them on. So ignore all this fstab business until we can figure out how to get it working. 
+ To set these other machines (rpi2, rpi3, rpi4) to use rpi1’s /home/pi/mpi (or other location, NFS does not care if it is /home) directory, do the following.
+
+Since rpi1 was set up as a NFS server serving up its he other opis have be told to mount this directory. In order to set up automatic mounting, you will need to making the following changes:
+You need to edit the fstab file: /etc/fstab
+Enter the following information to the bottom of the file:
+192.168.0.101:/home/mpi  /home/mpi   nfs   defaults,nfsvers=4,noatime  0  0
+Make sure that the local worker node has a mount point, as in if you are mounting the remote /home/mpi directory on rpi1, rpi2 (etc) should have an empty /home/mpi directory.
+Add a file to the worker nodes’ mpi directories called something like NFS_NOT_MOUNTED. That way, if NFS fails to mount the remote directory, you or the users will see this right away with your first ls! It avoids the confusion and fear one might have when not seeing their files in the directory where you expect them. When you are mounted, you will see the controller node’s directory, not the worker’s.
+After this, restart and the worker node should now be mounting the specified directory over the network!   Enter the command to manually mount your worker node to the controller node:
+
+$ sudo mount 192.168.1.110:/home/pi/mpi /home/pi/mpi
+
+The ip address will be the static ip of the controller node - you’re basically saying “mount the controller node’s mpi directory with my mpi directory”
+When you create a file in /home/mpi on one node, that file should appear in the same directory on the other rpis too! They still have their own version of the files locally, but they are ignored/invisible when mounted to another machine’s directory. This is why we can no longer see NFS_NOT_MOUNTED if we mounted it successfully.
+
+NFS mounts can be a subtle and mysterious thing to those new to linux, but it is really not much different than the idea of a “cloud drive”, in that you computer sees a directory of files that appear to be local, even if they are actually stored across the network somewhere. But is is very different from file synchronization systems like Google Drive, where there might be multiple copies of the file, one locally stored and one in the cloud that are kept in sync by some software. If rpi2 edits a file in the NFS mounted directory, that file changes in its actual location on rpi1.
+
+Installing MPI (mpi4py) on Lubuntu [Requires internet] - might need to disconnect the ethernet cords again
+
+To actually write parallel programs
+
+$ sudo apt-get install openmpi-bin libopenmpi-dev python-mpi4py python-numpy python-pygame
+
+
+
+This installs MPI and a number of related libraries.
+
+To use MPI, you will want to create a “machine file”. This file is basically just a list of all the nodes that you want to interact with your script. For example, I would create a file called “mpiexec-all” which would look like this:
+	rpi1
+	rpi2
+	rpi3
+	rpi4
+This tells your file which pis to access. It also associates each pi with a rank, e.g. rpi1’s rank would be 0, rpi2 would be 1, and so on…
+Here, I’ll provide an example python script that uses mpi to play separate videos on 4 different monitors 100 times:
+import os
+import sys
+import time
+from mpi4py import MPI
+import subprocess # check subprocesses documentation 
+
+
+comm = MPI.COMM_WORLD 
+rank = comm.Get_rank() # gets the rank of each pi
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "0,0" # set up the environment
+os.environ['DISPLAY'] = ':0.0'
+
+comm.Barrier() # synchronizes the pis so they all (theoretically) run at the same time
+
+for i in 100:
+    if rank == 0: # if the pi we’re using this file is rank 0...
+        subprocess.check_output(['omxplayer','screen1.mp4','--win','0
+        0 1920 1080']) # we will create subprocesses to run on the pis
+    if rank == 1:
+        subprocess.check_output(['omxplayer','screen2.mp4','--win','0
+        0 1920 1080'])
+    if rank == 2:
+        subprocess.check_output(['omxplayer','screen3.mp4','--win','0
+        0 1920 1080'])
+    if rank == 3:
+        subprocess.check_output(['omxplayer','screen4.mp4','--win','0
+        0 1920 1080'])
+
+exit(0) # after everything’s done, exit with code 0
+
+To run this file…
+$ mpiexec -n 4 -machinefile mpiexec-all -pernode python example.py
+4 for using 4 processors (pis) and -machinefile mpiexec-all to tell it to get rankings from the machine file mpiexec-all
+
+Also check this out: http://mpi4py.scipy.org/docs/usrman/tutorial.html#running-python-scripts-with-mpi
+
+Some optional optimizations for the Raspberry Pi 3
+
+The Raspberry Pi 3, in particular, has power problems. It really wants a power supply that can dependably give it close to three amps of current, and they can get cranky (flashing a little lightning bolt in the upper right hand corner of the screen, consistently) if they are unable to draw the power they need. If you are not using wifi or bluetooth, you can disable this hardware to save some power! Add the following lines at the end of /boot/config.txt. (Note that breaking config.txt is an easy path to reinstalling Raspbian, so be careful!)
+
+# disable bluetooth and wireless hardware
+dtoverlay=pi3-disable-bt
+dtoverlay=pi3-disable-wifi
+
+Then you can turn off the bluetooth service:
+
+$ sudo systemctl disable hciuart
+
+With the hardware turned off, you will also want to disable the bluetooth applet that appears on the desktop menu bar, using the gui.
+
+Screen blanking is a feature that turns Raspberry Pi screens black after a period of time. If you need you cluster screens to be “always on” for display reasons, add the following to /boot/config.txt:
+
+# turn off screen blanking
+consoleblank=0
+# maybe… this seems to have changed again with raspbian stretch.
+
+At this point, your cluster should be up and running! Try adding files to one pi and see if it shows in the mpi folder on another pi! Then try writing your own parallel processing script!
+
