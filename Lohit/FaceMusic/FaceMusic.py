@@ -113,7 +113,7 @@ def change_wallpaper(emotion):
     file = "%s\%s" %(current_dir, files[0])
     setWallpaperWithCtypes(file)
 
-def setWallpaperWithCtypes(path): #Taken from http://www.blog.pythonlibrary.org/2014/10/22/pywin32-how-to-set-desktop-background/
+def setWallpaperWithCtypes(path):
     cs = ctypes.c_buffer(path)
     ok = ctypes.windll.user32.SystemParametersInfoA(win32con.SPI_SETDESKWALLPAPER, 0, cs, 0)
 
