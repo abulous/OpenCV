@@ -41,6 +41,9 @@ while True:
 ## more importantly these effects are built from signal processing techniques that accentuate the image in order to get desired results.
 
     cv2.imshow('resized', res) 
-    cv2.waitKey(4) 
-##s.close()
+
+    k = cv2.waitKey(4) & 0xff
+    if k == 27:
+        break
+s.close()
 
