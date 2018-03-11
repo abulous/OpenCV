@@ -1,20 +1,20 @@
 # Isaac Nealey March 2018
 # adapted from https://stackoverflow.com/questions/37586520/python-udp-videostreaming-with-cv2
 #
-# for this code to run, four intances of ' client_udp.py ' need to be
-# running. Their UDP socket should point to the IP of THIS machine,
+# for this code to display images, four intances of ' client_udp.py ' need to be
+# running. Their UDP socket should point to the IP of THIS machine (wherever ' multi_udp_server.py ' is running),
 # using UDP ports 8012, 8013, 8014, 8015
 #
-# it would be possible to run all four locally, just point IPs to '127.0.0.1', and make sure each
-# ' client_udp ' has a unique capture. (i.e. cap = VideoCapture(0) in one file,
-#       cap = VideoCapture(1) in the next...)
+# it is possible to run all four locally, just point IPs to '127.0.0.1', and make sure each
+# ' client_udp ' has a unique capture.
+#       (i.e. "cap = VideoCapture(0)" in one file,
+#       "cap = VideoCapture(1)" in the next,
+#       "cap = VideoCapture(http://xxx.xxx.x.x:xxxx/streamedImg" in the third... etc.)
 
 import socket
-import sys
 import cv2
 import pickle
 import numpy as np
-import struct
 
 #HOST='xxx.xxx.x.x'  # Inet_4 address for udp x.x.x.x
 HOST='0.0.0.0'  # Inet_4 address for udp x.x.x.x
@@ -94,6 +94,6 @@ s1.close()
 s2.close()
 s3.close()
 s4.close()
-print('all sockets closed')
+print('\nall sockets closed')
 cv2.destroyAllWindows()
 
