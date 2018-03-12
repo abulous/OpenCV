@@ -1,1 +1,9 @@
-Edit Read Me!!
+HOW TO RUN OBJECT DETECTION ON PI
+1) install imutils with: pip install imutils
+2) copy imutils folder into pi object detection directory or direct path to the program
+3) in cmd: source ~/.profile
+4) workon cv
+5) from pi object detection directory type in the cmd: python pi_object_detection.py --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
+(you can also do a slower object detection with the command: python real_time_object_detection.py --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
+NOTE:
+number of detections in pi_object detection has been limited to one at a time
