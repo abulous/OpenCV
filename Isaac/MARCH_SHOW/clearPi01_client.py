@@ -27,8 +27,6 @@ stripePi = (stripePi_IP, DISP_OUT_PORT02)
 
 # create and sockets
 colorSocket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
-graySocket01=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-graySocket02=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 print('client sockets created')
 
 # init camera
@@ -40,7 +38,7 @@ time.sleep(2) # some time to set up
 
 while True:
     ret,frame=cap.read()
-    res = cv2.resize(frame,(140, 140), interpolation = cv2.INTER_AREA) # aiming for buffer size of 58,800 = 140*140*3
+    res = cv2.resize(frame,(140, 140), interpolation = cv2.INTER_AREA) 
     data = np.array(res)
     
     #check print if unsure of final size
@@ -50,10 +48,4 @@ while True:
     dataToSend = pickle.dumps(data)
     colorSocket.sendto(dataToSend, stickerPi)
 
-    # now send off the grayscale ones
-    gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-    data = np.array(gray)   
-    dataToSend = pickle.dumps(data)     # should be 19,793
-    graySocket01.sendto(dataToSend, blackPi)
-    graySocket02.sendto(dataToSend, stripePi)
     
