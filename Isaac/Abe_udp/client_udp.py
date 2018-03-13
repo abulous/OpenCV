@@ -8,9 +8,9 @@ import struct
 import time
 
 #UDP_IP = "xxx.xxx.x.x" # Inet_4 address for udp
-#UDP_IP = "192.168.0.102" # Inet_4 address for udp
-UDP_IP = "127.0.0.1" # Inet_4 address for udp
-UDP_PORT = 8012
+UDP_IP = "192.168.0.102" # Inet_4 address for udp
+#UDP_IP = "127.0.0.1" # Inet_4 address for udp
+UDP_PORT = 8013
 cap=cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
@@ -18,6 +18,7 @@ cap.set(4, 480)
 #cap.set(4, 240)
 clientsocket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
 time.sleep(2)
+counter = 0
 while True:
     ret,frame=cap.read()
     #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # drop it down to one channel
@@ -36,7 +37,6 @@ while True:
 ##    size = sys.getsizeof(dataToSend)
 
 ##    print(size)
-##    cv2.imshow('resized', res) 
-##    cv2.waitKey(4)
     clientsocket.sendto(dataToSend, (UDP_IP, UDP_PORT))
-
+   
+clientsocket.close() 
