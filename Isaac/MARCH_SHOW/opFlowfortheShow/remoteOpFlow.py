@@ -53,26 +53,33 @@ mask = np.zeros_like(back2RGB)
 timer = time.time()
 
 # grab from sound data before we start
-soundData = soundSocket.recvfrom(1024)
+soundData = soundSocket.recvfrom(18)
 oldsoundData = soundData
 soundToggle = False
-
+counter = 0
 while(1):
     #new corners every xxx seconds
-    if time.time() - timer > 30:
+    if time.time() - timer > 20:
         mask = np.zeros_like(back2RGB)
         timer = time.time()
+        # flush sound buffer
+        data = b'1'
+        while len(data) > 1024:
+            data = soundSocket.recvfrom(18)
+        soundData = soundSocket.recvfrom(1024)
     
-    #ret,frame = cap.read()
     trackingData, addr = trackingSocket.recvfrom(57793) #240 grayscale
     frame = pickle.loads(trackingData)
     frame_gray = cv2.resize(frame, (640, 480), interpolation = cv2.INTER_LINEAR)
 
     # check sound trigger
-    soundData = soundSocket.recvfrom(1024)
+    soundData = soundSocket.recvfrom(18)
     if soundData != oldsoundData:
         soundToggle = not soundToggle
         oldsoundData = soundData
+
+    # increment counter
+    counter += 1
 
     # calculate optical flow
     p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
@@ -88,6 +95,10 @@ while(1):
         old_frame = pickle.loads(trackingData)
         old_gray = cv2.resize(old_frame, (640, 480), interpolation = cv2.INTER_LINEAR)
         back2RGB = cv2.cvtColor(old_frame, cv2.COLOR_GRAY2RGB)
+        #update mask
+        if time.time() - timer > 30:
+            mask = np.zeros_like(back2RGB)
+            timer = time.time()
         p0 = cv2.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
         p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
         good_new = p1[st==1]
@@ -101,9 +112,10 @@ while(1):
         #frame = cv2.circle(frame,(a,b),5,color[i].tolist(),-1)
 
     # convert back to three channels
-    backToRGB = cv2.cvtColor(frame_gray, cv2.COLOR_GRAY2RGB)
-    # add mask w lines
-    img = cv2.add(backToRGB,mask)
+    back2RGB = cv2.cvtColor(frame_gray, cv2.COLOR_GRAY2RGB)
+
+    img = cv2.add(back2RGB,mask)
+
     #now with funky edge detection
     lap = cv2.Laplacian(img, cv2.CV_64F)
     if soundToggle:
