@@ -29,32 +29,21 @@ args = vars(ap.parse_args())
 HOST='0.0.0.0'  # host Inet_4 address for udp x.x.x.x
 TRACKING_PORT = 8101 # this comes from clearPi01 - RGB stream
 
-# ports for incoming display streams
-DISP_PORT01 = 8105 # this comes from clearPi02 - grayscale stream
-DISP_PORT02 = 8106 # this comes from clearPi03 - grayscale stream
-
 # port for sound input
 MIC_PORT = 12500 # this comes from clearPi03
 
 # create and bind the sockets
 trackingSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # SOCK_DGRAM for udp
-dispSocket1 = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-dispSocket2 = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 soundSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 print ('\nsockets created')
 
 trackingSocket.bind((HOST, TRACKING_PORT))
-dispSocket1.bind((HOST, DISP_PORT01))
-dispSocket2.bind((HOST, DISP_PORT02))
 soundSocket.bind((HOST, MIC_PORT))
 print ('\nSocket binding complete')
 print('\nlistening for a 140 x 140 RGB stream @ 8101')
-print('listening for a 140 x 140 grayscale stream @ 8105')
-print('listening for a 140 x 140 grayscale stream @ 8106')
-print('listening for a char trigger @ 8110')
+print('listening for a char trigger @ 12500')
 
 trackingData = ""
-displayData = ""
 soundData = ""
 
 # define the lower and upper boundaries of the "green"
@@ -80,38 +69,24 @@ else:
         camera = cv2.VideoCapture(args["video"])
 
 # grab from sound data before we start
-oldsoundData = soundSocket.recvfrom(4289)
-streamSelect = 1
+soundData = soundSocket.recvfrom(1024)
+oldsoundData = soundData
+soundToggle = False
 
 # keep looping
 while True:
         # get image to track:
-        trackingData, addr0 = trackingSocket.recvfrom(58993) #buffer size of incoming image.
+        trackingData, addr = trackingSocket.recvfrom(58993) #buffer size of incoming image.
         frame = pickle.loads(trackingData)
-
-        # switch to decide where to recieve from 
-        if streamSelect == 1:
-                imtoShow = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        elif streamSelect == 2:
-                displayData, addr1 = dispSocket1.recvfrom(19793) # <-- change size!
-                imtoShow = pickle.loads(displayData)
-        elif streamSelect == 3:
-                displayData, addr2 = dispSocket2.recvfrom(19793) # <-- change size!
-                imtoShow = pickle.loads(displayData)
-
-        # resize to 'camImg' the frame to be drawn on and shown
-        camImg = cv2.resize(imtoShow, (640, 480), interpolation = cv2.INTER_LINEAR)
-
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
 
         # check sound trigger
         soundData = soundSocket.recvfrom(4289)
         if soundData != oldsoundData:
-                # change this to random instead of increment
-                streamSelect += 1
+                soundToggle = not soundToggle
+                oldsoundData = soundData
         
-        
-        
-
         # resize the frame, blur it, and convert it to the HSV
         # color space
         frame = imutils.resize(frame, width=600)
@@ -200,7 +175,10 @@ while True:
 
         # show the frame to our screen and increment the frame counter
         canny = cv2.Canny(camImg,60, int(np.abs(dY)), 1)
-        blend = cv2.addWeighted(gray, np.abs(dX / 600), canny, (1 - np.abs(dX / 600)), 0)
+        if soundToggle == True:
+                blend = cv2.addWeighted(camImg, (1 - np.abs(dX / 600)), canny, np.abs(dX / 600), 0)
+        else:
+                blend = cv2.addWeighted(camImg, np.abs(dX / 600), canny, (1 - np.abs(dX / 600)), 0)
         #blend = cv2.addWeighted(gray, 0.5, canny, 0.5, 0)
         cv2.imshow("remote param mods", blend)
         key = cv2.waitKey(1) & 0xFF
