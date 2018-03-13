@@ -31,9 +31,13 @@ GPIO.setup(4,GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 trigOn = False
 trigTimer = time.time()
 sendTimer = time.time()
-#spf = 0.15   # 10 fps:  1sec/10frames = 0.1 spf
-spf = 0.2   # 10 fps:  1sec/10frames = 0.1 spf
+#spf = 0.1   # 10 fps:  1sec/10frames = 0.1 spf
+#spf = 0.15 
+spf = 0.17 
+#spf = 0.2
 # ^ play with this for preference
+
+print('\nsending out @ 12500, 12501, 12502:')
 
 # prgm loop
 while True:
