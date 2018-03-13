@@ -1,7 +1,7 @@
 # Isaac Nealey March 2018
 # adapted from https://stackoverflow.com/questions/37586520/python-udp-videostreaming-with-cv2
 #
-# for this code to display images, four intances of ' client_udp.py ' need to be
+# for this code to display video, four intances of ' client_udp.py ' need to be
 # running. Their UDP socket should point to the IP of THIS machine (wherever ' multi_udp_server.py ' is running),
 # using UDP ports 8012, 8013, 8014, 8015
 #
@@ -17,7 +17,7 @@ import pickle
 import numpy as np
 
 #HOST='xxx.xxx.x.x'  # Inet_4 address for udp x.x.x.x
-HOST='0.0.0.0'  # Inet_4 address for udp x.x.x.x
+HOST='0.0.0.0'
 #set up four ports for UDP
 PORT01=8012
 PORT02=8013
