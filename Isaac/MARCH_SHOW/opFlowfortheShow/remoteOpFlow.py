@@ -66,7 +66,7 @@ while(1):
         data = b'1'
         while len(data) > 1024:
             data = soundSocket.recvfrom(18)
-        soundData = soundSocket.recvfrom(1024)
+        soundData = soundSocket.recvfrom(18)
     
     trackingData, addr = trackingSocket.recvfrom(57793) #240 grayscale
     frame = pickle.loads(trackingData)

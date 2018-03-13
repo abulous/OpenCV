@@ -15,7 +15,7 @@ import imutils
 import socket
 import pickle
 import cv2
-import random
+import time
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -73,8 +73,17 @@ soundData = soundSocket.recvfrom(1024)
 oldsoundData = soundData
 soundToggle = False
 
+# timer
+timer = time.time()
+
 # keep looping
 while True:
+
+        #every 20 sec, dump all data in UDP port to keep time
+        while len(data) > 1024:
+            data = soundSocket.recvfrom(18)
+        soundData = soundSocket.recvfrom(18)
+        
         # get image to track:
         trackingData, addr = trackingSocket.recvfrom(58993) #buffer size of incoming image.
         frame = pickle.loads(trackingData)
