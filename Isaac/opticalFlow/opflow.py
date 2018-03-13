@@ -41,24 +41,42 @@ while(1):
     # calculate optical flow
     p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
 
-    # Select good points
-    good_new = p1[st==1]
-    good_old = p0[st==1]
+    if p1 is not None:
+        # Select good points
+        good_new = p1[st==1]
+        good_old = p0[st==1]
+    else:
+        #find some new features
+        ret, old_frame = cap.read()
+        old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
+        p0 = cv2.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+        p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
+        good_new = p1[st==1]
+        good_old = p0[st==1]
 
     # draw the tracks
     for i,(new,old) in enumerate(zip(good_new,good_old)):
         a,b = new.ravel()
         c,d = old.ravel()
-        mask = cv2.line(mask, (a,b),(c,d), color[i].tolist(), 10)
+        mask = cv2.line(mask, (a,b),(c,d), color[i].tolist(), 20)
         #frame = cv2.circle(frame,(a,b),5,color[i].tolist(),-1)
-    img = cv2.add(frame,mask)
+        
+    ###### FOR DEBUG ######
+    # convert back to three channels
+    backToRGB = cv2.cvtColor(frame_gray, cv2.COLOR_GRAY2RGB)
+    #laplacian = cv2.Laplacian(frame_gray, cv2.CV_64F)
+    #img = cv2.add(laplacian,mask)
+    #img = cv2.add(frame,mask)
+    img = cv2.add(backToRGB,mask)
 
     #now with funky edge detection
     #laplacian = cv2.Laplacian(img, cv2.CV_64F)
-    sobelx = cv2.Sobel(img, cv2.CV_64F,1,0,ksize=5)
+    #sobelx = cv2.Sobel(img, cv2.CV_64F,1,0,ksize=5)
 
-    #cv2.imshow('frame',img)
-    cv2.imshow('edgy',sobelx)
+    #cv2.imshow('backinrgbnotblack',backToRGB)
+    cv2.imshow('frame.. not anymore!',img)
+    #cv2.imshow('edgy',sobelx)
+    #cv2.imshow('lap', laplacian)
     k = cv2.waitKey(30) & 0xff
     if k == 27:
         break
