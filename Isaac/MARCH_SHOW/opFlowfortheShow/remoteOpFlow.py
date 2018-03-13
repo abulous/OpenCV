@@ -4,8 +4,6 @@ import time
 import socket
 import pickle
 
-#cap = cv2.VideoCapture(0)
-
 # init stuff for udp streaming
 HOST='0.0.0.0'  # host Inet_4 address for udp x.x.x.x
 TRACKING_PORT = 8101 # this comes from clearPi02 - RGB stream
@@ -21,7 +19,7 @@ print ('\nsockets created')
 trackingSocket.bind((HOST, TRACKING_PORT))
 soundSocket.bind((HOST, MIC_PORT))
 print ('\nSocket binding complete')
-print('\nlistening for a 140 x 140 RGB stream @ 8101')
+print('\nlistening for a 240 x 240 gray stream @ 8101')
 print('listening for a char trigger @ 12502')
 
 trackingData = ""
@@ -42,31 +40,39 @@ lk_params = dict( winSize  = (15,15),
 color = np.random.randint(0,255,(100,3))
 
 # Take first frame and find corners in it
-#ret, old_frame = cap.read()
 trackingData, addr = trackingSocket.recvfrom(58993)
 old_frame = pickle.loads(trackingData)
-#old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
 old_gray = cv2.resize(old_frame, (640, 480), interpolation = cv2.INTER_LINEAR)
+back2RGB = cv2.cvtColor(old_gray, cv2.COLOR_GRAY2RGB)
 p0 = cv2.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
 
 # Create a mask image for drawing purposes
-mask = np.zeros_like(old_frame)
+mask = np.zeros_like(back2RGB)
 
 #timer
 timer = time.time()
 
+# grab from sound data before we start
+soundData = soundSocket.recvfrom(1024)
+oldsoundData = soundData
+soundToggle = False
+
 while(1):
     #new corners every xxx seconds
     if time.time() - timer > 30:
-        mask = np.zeros_like(old_frame)
+        mask = np.zeros_like(back2RGB)
         timer = time.time()
     
     #ret,frame = cap.read()
     trackingData, addr = trackingSocket.recvfrom(57793) #240 grayscale
     frame = pickle.loads(trackingData)
-    #frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frame_gray = cv2.resize(frame, (640, 480), interpolation = cv2.INTER_LINEAR)
-    
+
+    # check sound trigger
+    soundData = soundSocket.recvfrom(1024)
+    if soundData != oldsoundData:
+        soundToggle = not soundToggle
+        oldsoundData = soundData
 
     # calculate optical flow
     p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
@@ -78,9 +84,10 @@ while(1):
     else:
         #find some new features
         #ret, old_frame = cap.read()
-        trackingData, addr = trackingSocket.recvfrom(58993)
+        trackingData, addr = trackingSocket.recvfrom(57793)
         old_frame = pickle.loads(trackingData)
-        old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
+        old_gray = cv2.resize(old_frame, (640, 480), interpolation = cv2.INTER_LINEAR)
+        back2RGB = cv2.cvtColor(old_frame, cv2.COLOR_GRAY2RGB)
         p0 = cv2.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
         p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
         good_new = p1[st==1]
@@ -92,23 +99,17 @@ while(1):
         c,d = old.ravel()
         mask = cv2.line(mask, (a,b),(c,d), color[i].tolist(), 20)
         #frame = cv2.circle(frame,(a,b),5,color[i].tolist(),-1)
-        
-    ###### FOR DEBUG ######
+
     # convert back to three channels
     backToRGB = cv2.cvtColor(frame_gray, cv2.COLOR_GRAY2RGB)
-    #laplacian = cv2.Laplacian(frame_gray, cv2.CV_64F)
-    #img = cv2.add(laplacian,mask)
-    #img = cv2.add(frame,mask)
+    # add mask w lines
     img = cv2.add(backToRGB,mask)
-
     #now with funky edge detection
-    #laplacian = cv2.Laplacian(img, cv2.CV_64F)
-    #sobelx = cv2.Sobel(img, cv2.CV_64F,1,0,ksize=5)
+    lap = cv2.Laplacian(img, cv2.CV_64F)
+    if soundToggle:
+        img = lap
 
-    #cv2.imshow('backinrgbnotblack',backToRGB)
     cv2.imshow('frame.. not anymore!',img)
-    #cv2.imshow('edgy',sobelx)
-    #cv2.imshow('lap', laplacian)
     k = cv2.waitKey(30) & 0xff
     if k == 27:
         break
@@ -118,4 +119,5 @@ while(1):
     p0 = good_new.reshape(-1,1,2)
 
 cv2.destroyAllWindows()
-cap.release()
+trackingSocket.close()
+soundSocket.close()
