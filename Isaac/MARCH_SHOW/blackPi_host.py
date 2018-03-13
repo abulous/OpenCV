@@ -27,10 +27,10 @@ args = vars(ap.parse_args())
 
 # init stuff for udp streaming
 HOST='0.0.0.0'  # host Inet_4 address for udp x.x.x.x
-TRACKING_PORT = 8101 # this comes from clearPi01 - RGB stream
+TRACKING_PORT = 8101 # this comes from clearPi02 - RGB stream
 
 # ports for incoming display streams
-DISP_PORT01 = 8105 # this comes from clearPi02 - grayscale stream
+DISP_PORT01 = 8105 # this comes from clearPi01 - grayscale stream
 DISP_PORT02 = 8106 # this comes from clearPi03 - grayscale stream
 
 # port for sound input

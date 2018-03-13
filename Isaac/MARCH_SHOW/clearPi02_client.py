@@ -1,7 +1,7 @@
 # Isaac Nealey 2018
 # adapted from https://stackoverflow.com/questions/37586520/python-udp-videostreaming-with-cv2
 
-# this guy will live on clearPi01, sending its RGB stream to stickerPi
+# this script will ive one clearPi02, sending its rgb stream to blackPi
 
 import cv2
 import numpy as np
@@ -17,12 +17,12 @@ stripePi_IP = "192.168.0.109"
 blackPi_IP = "192.168.0.108"
 
 #UDP_PORT = xxxx - port for udp
-TRACKING_PORT = 8101 # send to stickerPi
-DISP_OUT_PORT01 = 8105 # send to blackPi
+TRACKING_PORT = 8101 # send to blackPi
+DISP_OUT_PORT01 = 8105 # send to stickerPi
 DISP_OUT_PORT02 = 8106 # send to stripePi
 
-stickerPi = (stickerPi_IP, TRACKING_PORT)
-blackPi = (blackPi_IP, DISP_OUT_PORT01)
+stickerPi = (stickerPi_IP, DISP_OUT_PORT01)
+blackPi = (blackPi_IP, TRACKING_PORT)
 stripePi = (stripePi_IP, DISP_OUT_PORT02)
 
 # create and sockets
@@ -46,14 +46,14 @@ while True:
     #check print if unsure of final size
     #print(data)
 
-    # send off to stickerPi
+    # send off to blackPi
     dataToSend = pickle.dumps(data)
-    colorSocket.sendto(dataToSend, stickerPi)
+    colorSocket.sendto(dataToSend, blackPi)
 
     # now send off the grayscale ones
     gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
     data = np.array(gray)   
     dataToSend = pickle.dumps(data)     # should be 19,793
-    graySocket01.sendto(dataToSend, blackPi)
+    graySocket01.sendto(dataToSend, stickerPi)
     graySocket02.sendto(dataToSend, stripePi)
     
