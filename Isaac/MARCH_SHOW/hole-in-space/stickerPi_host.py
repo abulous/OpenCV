@@ -79,7 +79,6 @@ timer = time.time()
 
 # keep looping
 while True:
-
         #every 20 sec, dump all data in UDP port to keep time
         while len(data) > 1024:
             data = soundSocket.recvfrom(18)
@@ -92,7 +91,7 @@ while True:
         #camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
 
         # check sound trigger
-        soundData = soundSocket.recvfrom(4289)
+        soundData = soundSocket.recvfrom(18)
         if soundData != oldsoundData:
                 soundToggle = not soundToggle
                 oldsoundData = soundData

@@ -46,6 +46,7 @@ print('listening for a char trigger @ 12500')
 
 trackingData = ""
 soundData = ""
+data = ""
 
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space
@@ -79,6 +80,11 @@ timer = time.time()
 
 # keep looping
 while True:
+        #every 20 sec, dump all data in UDP port to keep time
+        while len(data) > 1024:
+            data = soundSocket.recvfrom(18)
+        soundData = soundSocket.recvfrom(18)
+        
         # get image to track:
         trackingData, addr = trackingSocket.recvfrom(58993) #buffer size of incoming image.
         frame = pickle.loads(trackingData)
@@ -122,8 +128,7 @@ while True:
                 if radius > 10:
                         # draw the circle and centroid on the frame,
                         # then update the list of tracked points
-                        #cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-                        cv2.circle(camImg, center, 5, (0, 0, 255), -1)
+                        cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
                         pts.appendleft(center)
 
         # loop over the set of tracked points
@@ -163,7 +168,7 @@ while True:
 
                 # otherwise, compute the thickness of the line and
                 # draw the connecting lines
-                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
+                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 3.5)
                 cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
         # show the movement deltas and the direction of movement on
