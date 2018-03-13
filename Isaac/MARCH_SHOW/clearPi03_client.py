@@ -40,8 +40,8 @@ time.sleep(2) # some time to set up
 
 while True:
     ret,frame=cap.read()
-    gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-    res = cv2.resize(gray,(140, 140), interpolation = cv2.INTER_AREA) # aiming for buffer size of 58,800 = 140*140*3
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    res = cv2.resize(gray,(240, 240), interpolation = cv2.INTER_AREA) # aiming for buffer size of 58,800 = 140*140*3
     data = np.array(res)
     
     #check print if unsure of final size
@@ -49,8 +49,6 @@ while True:
 
     # send off to blackPi
     dataToSend = pickle.dumps(data) # should be 19,793
-    graySocket01.sendto(dataToSend, stickerPi)
     graySocket02.sendto(dataToSend, stripePi)
-    graySocket03.sendto(dataToSend, blackPi)
 
     

@@ -31,7 +31,8 @@ GPIO.setup(4,GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 trigOn = False
 trigTimer = time.time()
 sendTimer = time.time()
-spf = 0.15   # 10 fps:  1sec/10frames = 0.1 spf
+#spf = 0.15   # 10 fps:  1sec/10frames = 0.1 spf
+spf = 0.2   # 10 fps:  1sec/10frames = 0.1 spf
 # ^ play with this for preference
 
 # prgm loop
