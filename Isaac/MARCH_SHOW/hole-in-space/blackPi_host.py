@@ -15,7 +15,6 @@ import imutils
 import socket
 import pickle
 import cv2
-import random
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
