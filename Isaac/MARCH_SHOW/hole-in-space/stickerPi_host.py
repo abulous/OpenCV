@@ -45,6 +45,7 @@ print('listening for a char trigger @ 12500')
 
 trackingData = ""
 soundData = ""
+data = ""
 
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space
@@ -87,8 +88,8 @@ while True:
         # get image to track:
         trackingData, addr = trackingSocket.recvfrom(58993) #buffer size of incoming image.
         frame = pickle.loads(trackingData)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
+        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
 
         # check sound trigger
         soundData = soundSocket.recvfrom(4289)
@@ -130,7 +131,8 @@ while True:
                         # draw the circle and centroid on the frame,
                         # then update the list of tracked points
                         #cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-                        cv2.circle(camImg, center, 5, (0, 0, 255), -1)
+                        #cv2.circle(camImg, center, 5, (0, 0, 255), -1)
+                        cv2.circle(frame, center, 5, (0, 0, 255), -1)
                         pts.appendleft(center)
 
         # loop over the set of tracked points
@@ -170,9 +172,8 @@ while True:
 
                 # otherwise, compute the thickness of the line and
                 # draw the connecting lines
-                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-                #cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
-                cv2.line(camImg, pts[i - 1], pts[i], (0, 0, 255), thickness)
+                thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 3.5)
+                cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
         # show the movement deltas and the direction of movement on
         # the frame
@@ -182,13 +183,16 @@ while True:
                 #(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                 #0.35, (0, 0, 255), 1)
 
+        # reformat img
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
+        
         # show the frame to our screen and increment the frame counter
         canny = cv2.Canny(camImg,60, int(np.abs(dY)), 1)
         if soundToggle == True:
                 blend = cv2.addWeighted(camImg, (1 - np.abs(dX / 600)), canny, np.abs(dX / 600), 0)
         else:
                 blend = cv2.addWeighted(camImg, np.abs(dX / 600), canny, (1 - np.abs(dX / 600)), 0)
-        #blend = cv2.addWeighted(gray, 0.5, canny, 0.5, 0)
         cv2.imshow("remote param mods", blend)
         key = cv2.waitKey(1) & 0xFF
         counter += 1
@@ -200,4 +204,5 @@ while True:
 # cleanup the camera and close any open windows
 #camera.release()
 cv2.destroyAllWindows()
-s.close()
+trackingSocket.close()
+soundSocket.close()

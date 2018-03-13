@@ -82,8 +82,6 @@ while True:
         # get image to track:
         trackingData, addr = trackingSocket.recvfrom(58993) #buffer size of incoming image.
         frame = pickle.loads(trackingData)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
 
         # check sound trigger
         soundData = soundSocket.recvfrom(18)
@@ -166,8 +164,7 @@ while True:
                 # otherwise, compute the thickness of the line and
                 # draw the connecting lines
                 thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-                #cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
-                cv2.line(camImg, pts[i - 1], pts[i], (0, 0, 255), thickness)
+                cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
         # show the movement deltas and the direction of movement on
         # the frame
@@ -176,6 +173,10 @@ while True:
         #cv2.putText(frame, "dx: {}, dy: {}".format(dX, dY),
                 #(10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                 #0.35, (0, 0, 255), 1)
+
+        # reformat img
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        camImg = cv2.resize(gray,(640, 480), interpolation = cv2.INTER_AREA) 
 
         # show the frame to our screen and increment the frame counter
         canny = cv2.Canny(camImg,60, int(np.abs(dY)), 1)
@@ -195,4 +196,5 @@ while True:
 # cleanup the camera and close any open windows
 #camera.release()
 cv2.destroyAllWindows()
-s.close()
+trackingSocket.close()
+soundSocket.close()
