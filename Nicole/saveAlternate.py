@@ -37,11 +37,9 @@ def read1_write2(frame_capture):
     
     writer2.write(frame_capture)
     if ret:
-##        cv2.imshow("vid1.avi Display", frame_read)
-##        cv2.moveWindow("vid1.avi Display", 700,10)
         return frame_read
     else:
-        return np.zeros_like(frame_capture)
+        return frame_capture
 
 def read2_write1(frame_capture):
     '''Read from vid2.avi and write passed frame to vid1.avi'''
@@ -50,11 +48,9 @@ def read2_write1(frame_capture):
 
     writer1.write(frame_capture)
     if ret:
-##        cv2.imshow("vid2.avi Display", frame_read)
-##        cv2.moveWindow("vid2.avi Display", 700,500)
         return frame_read
     else:
-        return np.zeros_like(frame_capture)
+        return frame_capture
 
 def init_read2_write1():
     '''Stop reading from vid1.avi
@@ -93,7 +89,7 @@ def init_read1_write2():
 switch = False
 newFace = False
 noface_counter = 0
-noface_buffer = 5 #frames
+noface_buffer = 20 #frames
 faces = []
 
 while True:
@@ -130,17 +126,16 @@ while True:
             newFace = False
 
         if switch and not newFace:
-            frame_read = read1_write2(frame) #FIXME: frame_read = None
+            frame_read = read1_write2(frame)
         elif not switch and not newFace:
-            frame_read = read2_write1(frame) #FIXME: frame_read = None
+            frame_read = read2_write1(frame)
 
-        #frame_read = np.zeros_like(frame) #FIXME: remove when above fixme's are fixed
         frame_blend = cv2.addWeighted(frame, 0.5, frame_read, 0.5, 0)
         comm.send(frame_blend, dest=1, tag=10)
     if rank == 1:
         frame_blend = comm.recv(source=0, tag=10)
-        cv2.imshow("LIVE CAPTURE - for reference", frame_blend)
-        cv2.moveWindow("LIVE CAPTURE - for reference", 10,10)
+        cv2.imshow("Blended Video", frame_blend)
+        cv2.moveWindow("Blended Video", 10,10)
         if cv2.waitKey(33) == 27:
             break
 
