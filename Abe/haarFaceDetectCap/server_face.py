@@ -6,7 +6,7 @@ import cv2
 import os
 from socket import *
 
-host = ""
+host = "0.0.0.0"
 port = 13000
 buf = 1024
 addr = (host, port)
