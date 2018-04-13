@@ -1,9 +1,14 @@
-SET UP WIFI ON PROTECTED
-go to:
-/etc/wpa_supplicant/wpa_supplicant.conf (fill in your own AD/username and password.)
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf 
 
-then type:
-network={ ssid="UCSD-PROTECTED" key_mgmt=WPA-EAP eap=PEAP identity="youruserid@ucsd.edu" password="yourpassword" phase1="peapver=0" phase2="auth=MSCHAPV2" }
+network={
+ssid="UCSD-PROTECTED" 
+key_mgmt=WPA-EAP
+eap=PEAP 
+identity="youruserid@ucsd.edu"
+password="yourpassword" 
+phase1="peapver=0"
+phase2="auth=MSCHAPV2" 
+}
 Then restart networking.
 cat /etc/os-release
 
@@ -49,5 +54,21 @@ WHERE'S CUDA !!???
 /Developer/NVIDIA/CUDA-9.1/samples
 
 DEBIAN INSTALL
+https://www.debian.org/CD/http-ftp/
+
 sudo fdisk -l
-sudo dd if=debian-9.4.0-amd64-DVD-1.iso of=/dev/sdb bs=4M; sync
+sudo dd if=~/Downloads/debian-9.4.0-amd64-DVD-1.iso of=/dev/sdb bs=4M; sync
+
+https://wiki.debian.org/iwlwifi
+
+<!-- Launch LXTerminal with Ctrl+Alt+t-->
+    <keybind key="C-A-t">
+      <action name="Execute">
+        <command>lxterminal</command>
+      </action>
+    </keybind>
+
+
+
+
+
