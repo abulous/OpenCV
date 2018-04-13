@@ -1,0 +1,50 @@
+                /etc/wpa_supplicant/wpa_supplicant.conf (fill in your own AD/username and password.)
+
+network={ ssid="UCSD-PROTECTED" key_mgmt=WPA-EAP eap=PEAP identity="youruserid@ucsd.edu" password="yourpassword" phase1="peapver=0" phase2="auth=MSCHAPV2" }
+Then restart networking.
+cat /etc/os-release
+
+Move file from my pi to my host computer while logged onto my host. 
+
+scp pi@192.168.0.7: /home/pi/cap.py   /Users/abe/Desktop
+
+Play movie: omxplayer  MovieName.mov
+
+firmware Debian 
+
+Network controller: Intel Corporation Wireless 7265 (rev 59)
+
+You can install it using sudo dpkg -i /path/to/deb/file followed by sudo apt-get install -f
+
+# sudo sysctl -w net.inet.udp.maxdgram=65535 #or whatever max value you want                                                                     # probably because of resizing interpolation or
+# /proc/sys/net/core/rmem_default ...for pi                                                                     # from pickling. docs says it adds a little more data
+## 2^16 65536 max udp for single packet                                                                    # Most important point is that the value returned from
+# 280/210 = 4/3 aspect ratio. 
+
+61182189 TCP-LINK
+
+
+
+ssh-keygen -R 192.168.0.100
+
+wget -O opencv_contrib.zip https://github.com/Itseez/opencv_contrib/archive/3.4.1.zip
+I would suggest explicitly setting your Python version for virtualenvwrapper inside your .profile file, like this:
+
+# virtualenv and virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+source /usr/local/bin/virtualenvwrapper.sh
+
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D INSTALL_PYTHON_EXAMPLES=ON \
+    -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.4.1/modules \
+    -D BUILD_EXAMPLES=ON ..
+
+WHERE'S CUDA !!???
+/Developer/NVIDIA/CUDA-9.1/samples
+
+DEBIAN INSTALL
+sudo fdisk -l
+sudo dd if=debian-9.4.0-amd64-DVD-1.iso of=/dev/sdb bs=4M; sync
