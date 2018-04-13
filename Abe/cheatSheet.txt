@@ -1,5 +1,8 @@
-                /etc/wpa_supplicant/wpa_supplicant.conf (fill in your own AD/username and password.)
+SET UP WIFI ON PROTECTED
+go to:
+/etc/wpa_supplicant/wpa_supplicant.conf (fill in your own AD/username and password.)
 
+then type:
 network={ ssid="UCSD-PROTECTED" key_mgmt=WPA-EAP eap=PEAP identity="youruserid@ucsd.edu" password="yourpassword" phase1="peapver=0" phase2="auth=MSCHAPV2" }
 Then restart networking.
 cat /etc/os-release
