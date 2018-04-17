@@ -2,9 +2,9 @@ import numpy as np
 import cv2
 
 # amy alexander  04/18
-# Adapted from FaceDetector demo in the Basics & Trix folder. 
+# Adapted from FaceDetector demo in the Basics & Trix folder.
 # find faces and profiles in still images
-# intended for use with YouTube thumbnails
+
 
 
 def main ():
