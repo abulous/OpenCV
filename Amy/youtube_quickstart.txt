@@ -1,0 +1,35 @@
+Want to use YouTube videos in your python project? Or create your own and run an automated channel?
+Two things to know about:
+1) YouTube API -- which lets you not only query and filter, but also upload, comment, and do just about
+everything else to your channel.
+2) The youtube-dl script. Originally it only could download, so your search & filtering had to be done through the
+API. Recent versions have added search & filtering capabilities, so you may or may not still need the API.
+
+
+Getting started with YouTube API:
+https://developers.google.com/youtube/v3/
+(Or jump to Step 4 to go straight to youtube-dl downloading)
+
+Step 1: Create a project and create an API key (Only have to do this once.)
+https://developers.google.com/y…/registering_an_application…
+
+Step 2:
+Install the Google API client
+pip install --upgrade google-api-python-client
+
+Step 3:
+Play with the example code. (Don't forget to fill in your API key.)
+https://developers.google.com/youtube/…/code_samples/python…
+
+In the right side bar, you'll see they have examples for how to do just about anything on YouTube via the API.
+
+Step 4:
+To actually download, you can use youtube-dl
+https://github.com/rg3/youtube-dl
+(Easiest way: just add a line to your python script to call it: os.system("youtube-dl [whatever options]").
+You'll need to reconstruct the input URL using your search results: i.e. youtube-dl [whatever options]
+https://www.youtube.com/watch?v=" + search_result["id"]["videoId"]
+
+
+*** Note that recent versions of youtube-dl include a lot of functionality for search and qualifiers.
+So depending on what you're doing, you may not actually need the YouTube API anymore. ****
