@@ -1,14 +1,6 @@
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf 
 
-network={
-ssid="UCSD-PROTECTED" 
-key_mgmt=WPA-EAP
-eap=PEAP 
-identity="youruserid@ucsd.edu"
-password="yourpassword" 
-phase1="peapver=0"
-phase2="auth=MSCHAPV2" 
-}
+network={ ssid="UCSD-PROTECTED" key_mgmt=WPA-EAP eap=PEAP identity="youruserid@ucsd.edu" password="yourpassword" phase1="peapver=0" phase2="auth=MSCHAPV2" }
 Then restart networking.
 cat /etc/os-release
 
@@ -67,6 +59,21 @@ https://wiki.debian.org/iwlwifi
         <command>lxterminal</command>
       </action>
     </keybind>
+
+# usermod -aG sudo username
+
+SKIP LOGIN
+sudo nano /usr/share/lightdm/lightdm.conf.d/01_debian.conf
+
+autologin-user=username
+autologin-user-timeout=0
+
+sudo apt-get install git git-core
+
+WARNING: You do not appear to have an NVIDIA GPU supported by the 375.26 NVIDIA Linux graphics driver installed in this system.  For further details, please see the appendix SUPPORTED NVIDIA GRAPHICS CHIPS in the README available on the Linux driver download page at www.nvidia.com. 
+
+
+
 
 
 
