@@ -60,9 +60,13 @@ https://wiki.debian.org/iwlwifi
       </action>
     </keybind>
 
+**if scp permission is denied**
+chown username nameOfDirectory
+
+** make user have sudo privileges**
 # usermod -aG sudo username
 
-SKIP LOGIN
+**SKIP LOGIN**
 sudo nano /usr/share/lightdm/lightdm.conf.d/01_debian.conf
 
 autologin-user=username
@@ -70,11 +74,9 @@ autologin-user-timeout=0
 
 sudo apt-get install git git-core
 
+find / -type f -name "*.jpg"
+
 WARNING: You do not appear to have an NVIDIA GPU supported by the 375.26 NVIDIA Linux graphics driver installed in this system.  For further details, please see the appendix SUPPORTED NVIDIA GRAPHICS CHIPS in the README available on the Linux driver download page at www.nvidia.com. 
-
-
-
-
 
 
 
