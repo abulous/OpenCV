@@ -31,6 +31,9 @@ You'll need to reconstruct the input URL using your search results: i.e. youtube
 https://www.youtube.com/watch?v=" + search_result["id"]["videoId"]
 
 
-*** Note that recent versions of youtube-dl include a lot of functionality for search and qualifiers. You probably still need youtube api, but check out the capabilities.  There's also a youtube-dl python module. 
+*** Note that recent versions of youtube-dl include a lot of 
+functionality for search and qualifiers. You probably still need 
+youtube api, but check out the capabilities.  There's also a youtube-dl 
+python module. 
 
 
