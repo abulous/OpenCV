@@ -31,7 +31,7 @@ https://github.com/rg3/youtube-dl
 You'll need to reconstruct the input URL using your search results: i.e. youtube-dl [whatever options]
 https://www.youtube.com/watch?v=" + search_result["id"]["videoId"]
 
-There is also a youtube-dl python module. It lets you avoid the system call, and may have some
+There is also a youtube-dl python module. It lets you avoid the system call and may have some
 advantages in some cases. But I recommend starting out with the command line version as I
 find it to be more straightforward.
 https://github.com/rg3/youtube-dl/blob/master/README.md#embedding-youtube-dl
