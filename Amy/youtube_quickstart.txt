@@ -3,7 +3,8 @@ Two things to know about:
 1) YouTube API -- which lets you not only query and filter, but also upload, comment, and do just about
 everything else to your channel.
 2) The youtube-dl script. Originally it only could download, so your search & filtering had to be done through the
-API. Recent versions have added search & filtering capabilities. By combining filtering with YouTube API's options, you can fine tune your search more than you could by using either on its own. 
+API. Recent versions have added search & filtering capabilities. By combining filtering with YouTube API's options,
+you can fine tune your search more than you could by using either on its own.
 
 
 Getting started with YouTube API:
@@ -30,10 +31,8 @@ https://github.com/rg3/youtube-dl
 You'll need to reconstruct the input URL using your search results: i.e. youtube-dl [whatever options]
 https://www.youtube.com/watch?v=" + search_result["id"]["videoId"]
 
-
-*** Note that recent versions of youtube-dl include a lot of 
-functionality for search and qualifiers. You probably still need 
-youtube api, but check out the capabilities.  There's also a youtube-dl 
-python module. 
-
-
+There is also a youtube-dl python module. It lets you avoid the system call, and may have some
+advantages in some cases. But I recommend starting out with the command line version as I
+find it to be more straightforward.
+https://github.com/rg3/youtube-dl/blob/master/README.md#embedding-youtube-dl
+https://stackoverflow.com/questions/18054500/how-to-use-youtube-dl-from-a-python-program
