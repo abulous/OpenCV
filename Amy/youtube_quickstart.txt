@@ -3,7 +3,7 @@ Two things to know about:
 1) YouTube API -- which lets you not only query and filter, but also upload, comment, and do just about
 everything else to your channel.
 2) The youtube-dl script. Originally it only could download, so your search & filtering had to be done through the
-API. Recent versions have added search & filtering capabilities, so you may or may not still need the API.
+API. Recent versions have added search & filtering capabilities. By combining filtering with YouTube API's options, you can fine tune your search more than you could by using either on its own. 
 
 
 Getting started with YouTube API:
