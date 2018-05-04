@@ -1,5 +1,9 @@
-Experiments in analyzing still video and thumbnails for certain content characteristics.
+OpenCV experiments in analyzing images and video for certain content
+characteristics.
 
-Attempting to speed the video processing as much as possible, in order to do bulk analysis. 
-of 80 videos in a session. 
+Demo scripts illustrating:
+threading -- useful in simultaneously downloading, analyzing, and converting videos
+multiprocessing -- I'm not using it right now, but may be more desirable for
+  getting processes distributed across cpus or cores.
 
+  
