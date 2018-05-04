@@ -7,6 +7,11 @@ import time
 # videos and analyze in opencv in a parallel thread
 # This uses python3 threading module.  Different module/syntax for python2
 
+# If you want multiprocessing instead of threading, use the Process module
+# https://docs.python.org/2/library/multiprocessing.html
+# 16.6.1.1. The Process class
+# syntax should be almost identical
+
 # Any code that launches a gui probably needs to stay
 # in your main thread to keep from crashing python. At least on OSX.
 
