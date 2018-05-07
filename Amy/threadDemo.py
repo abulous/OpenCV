@@ -19,7 +19,7 @@ import time
 
 def download (threadname):
     print ("Starting thread " + threadname)
-    # your download code here.
+    # code to download one video here
 
 
 def analyze (threadname, mysearchresponse):
@@ -29,18 +29,16 @@ def analyze (threadname, mysearchresponse):
 
 
 # main function
-# putting threads in an endless loop for demo. in reality, you would probably
-# want something like
-# for search_result in search_response.get("items", []):
-while True:
 
-    # start threads.
+if __name__ == '__main__':
+# calling threads in a loop for demo:
+print ("Ctrl-C to exit script\n")
+for i in range(10):
+    # let's pretend I'm downloading and analyzing 10 videos
+    # start threads. In this case, I'm starting a new thread for each video.
     # notice how if there's only one argument, you have to put a trailing comma!
     threading.Thread(target=download, args=("download",)).start()
     threading.Thread(target=analyze, args=("analyze","searchresult")).start()
 
-    # code in your main thread
-    print ("Ctrl-C to exit script\n")
-
-    # I'm just putting this sleep in for the sake of the demo's endless loop.
+    # I'm just putting this sleep in so demo doesn't fly by so fast
     time.sleep (2)
