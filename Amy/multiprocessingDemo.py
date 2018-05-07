@@ -3,12 +3,7 @@
 import multiprocessing
 import time, os
 # multiprocessingDemo.py  -- amy alexander 5/2018
-# simple demo showing how you might use two separate processes
-
-# With multiprocessing, it's good to be careful not to start too many processes
-# Cause you can fill the process table and crash the system! 
-# So I'm not starting processes in a loop as I did in the threads demo.
-# But my functions (processes) have loops within them.
+# simple demo showing how you might use separate processes
 
 # References:
 # https://docs.python.org/3.6/library/multiprocessing.html
@@ -45,14 +40,15 @@ def secondThing (someargument):
 
 
 # main function:
-procname = multiprocessing.current_process().name
-print ('starting', procname, '. process id:', os.getpid())
+if __name__ == '__main__':
+    procname = multiprocessing.current_process().name
+    print ('starting', procname, '. process id:', os.getpid())
 
-# start the child processes.
-multiprocessing.Process(name="firstThing1", target=firstThing).start()
-multiprocessing.Process(name="firstThing2", target=firstThing).start()
+    # start the child processes.
+    multiprocessing.Process(name="firstThing1", target=firstThing).start()
+    multiprocessing.Process(name="firstThing2", target=firstThing).start()
 
-# notice how if there's only one argument, you have to put a trailing comma!
-multiprocessing.Process(name="secondThing1", args=("howdy",), target=secondThing).start()
+    # notice how if there's only one argument, you have to put a trailing comma!
+    multiprocessing.Process(name="secondThing1", args=("howdy",), target=secondThing).start()
 
-print ("Ctrl-C to exit script\n")
+    print ("Main function again! Ctrl-C to exit script\n")
