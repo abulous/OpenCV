@@ -51,6 +51,9 @@ https://www.debian.org/CD/http-ftp/
 sudo fdisk -l
 sudo dd if=~/Downloads/debian-9.4.0-amd64-DVD-1.iso of=/dev/sdb bs=4M; sync
 
+# ADD NON-FREE SOFTWARE
+sudo nano /etc/apt/sources.list
+
 https://wiki.debian.org/iwlwifi
 
 <!-- Launch LXTerminal with Ctrl+Alt+t-->
