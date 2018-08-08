@@ -75,7 +75,7 @@ First open and run which ever application you want to edit. Then in terminal typ
 
 $ xprop WM_CLASS
 
-Then click on the window of the application that is running and the name and class will be returned in the terminal window. I wanted to edit the window displaying my OpenCV video feed. The name and class was the name I gave to the "cv2.imshow" function. It was then displayed as the title in the title bar. I named it "PANOPTICON", when I ran "xprop WM_CLASS" the class and name that was returned was "PANOPTICON". So in OpenBox, I scrolled to the bottom and typed this:
+Then click on the window of the application that is running and the name and class will be returned in the terminal window. I wanted to edit the window displaying my OpenCV video feed. The name and class was the name I gave to the "cv2.imshow" function. It was then displayed as the title in the title bar. I named it "PANOPTICON", when I ran "xprop WM_CLASS" the class and name that was returned was "PANOPTICON". So in OpenBox, I scrolled to the bottom, but in between <applications>...</applications> and typed this:
 
 <application  name="PANOPTICON" class="PANOPTICON">
 	<decor>no</decor>  #this removes the title bar
