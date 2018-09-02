@@ -51,9 +51,6 @@ https://www.debian.org/CD/http-ftp/
 sudo fdisk -l
 sudo dd if=~/Downloads/debian-9.4.0-amd64-DVD-1.iso of=/dev/sdb bs=4M; sync
 
-# ADD NON-FREE SOFTWARE
-sudo nano /etc/apt/sources.list
-
 https://wiki.debian.org/iwlwifi
 
 <!-- Launch LXTerminal with Ctrl+Alt+t-->
@@ -79,8 +76,46 @@ sudo apt-get install git git-core
 
 find / -type f -name "*.jpg"
 
-WARNING: You do not appear to have an NVIDIA GPU supported by the 375.26 NVIDIA Linux graphics driver installed in this system.  For further details, please see the appendix SUPPORTED NVIDIA GRAPHICS CHIPS in the README available on the Linux driver download page at www.nvidia.com. 
+nvcc --version
+nvidia-smi
+lspci
+
+tar xvf tarball.tar.gz
+
+*** monitor ram, cpu, etc ****
+free
+top
+htop
+https://www.binarytides.com/linux-command-check-memory-usage
 
 
+## Update
+To update your already installed distro to the latest `master` branch of `torch/distro` si$
+```bash
+./update.sh
+```
 
+## Test
+You can test that all libraries are installed properly by running:
+```bash
+./test.sh
+
+
+ps -aef
+ps -f-u
+
+pip3 install tqdm
+pip3 install py-midi
+
+midi manipulation: https://github.com/llSourcell/Music_Generator_Demo/blob/master/midi_manipulation.py
+
+****WEB-CAM SETTINTS****
+sudo apt-get install uvcdynctrl
+sudo apt-get install guvcview
+sudo guvcview # this adds the Focus and a few other controls to uvcdynctrl list
+sudo chmod a+rw /dev/media0 # otherwise can't make the adjustments
+#plug and unplug the camera then ...
+
+** turn off auto exposure *** (3 is on, 1 is off)
+uvcdynctrl -d video0 -s "Exposure, Auto" 1
 
