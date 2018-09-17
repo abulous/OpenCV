@@ -118,4 +118,5 @@ sudo chmod a+rw /dev/media0 # otherwise can't make the adjustments
 
 ** turn off auto exposure *** (3 is on, 1 is off)
 uvcdynctrl -d video0 -s "Exposure, Auto" 1
+uvcdynctrl -c, --clist # List available controls
 
