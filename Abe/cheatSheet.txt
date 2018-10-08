@@ -1,14 +1,26 @@
+
+# GET ON UCSD-PROTECTED
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf 
 
 network={ ssid="UCSD-PROTECTED" key_mgmt=WPA-EAP eap=PEAP identity="youruserid@ucsd.edu" password="yourpassword" phase1="peapver=0" phase2="auth=MSCHAPV2" }
-Then restart networking.
+
+#Then restart networking.
+
 cat /etc/os-release
 
-Move file from my pi to my host computer while logged onto my host. 
 
+# disable bluetooth and wireless hardware
+dtoverlay=pi3-disable-bt
+dtoverlay=pi3-disable-wifi
+
+#Then you can turn off the bluetooth service:
+$ sudo systemctl disable hciuart
+
+# Move file from my pi to my host computer while logged onto my host. 
 scp pi@192.168.0.7: /home/pi/cap.py   /Users/abe/Desktop
 
-Play movie: omxplayer  MovieName.mov
+#Play movie: 
+omxplayer  MovieName.mov
 
 firmware Debian 
 
@@ -22,8 +34,6 @@ You can install it using sudo dpkg -i /path/to/deb/file followed by sudo apt-
 # 280/210 = 4/3 aspect ratio. 
 
 61182189 TCP-LINK
-
-
 
 ssh-keygen -R 192.168.0.100
 
