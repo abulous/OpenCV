@@ -3,13 +3,13 @@
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 
 network={
-ssid="UCSD-PROTECTED"
-key_mgmt=WPA-EAP
-eap=PEAP
-identity="youruserid@ucsd.edu"
-password="yourpassword"
-phase1="peapver=0"
-phase2="auth=MSCHAPV2"
+    ssid="UCSD-PROTECTED"
+    key_mgmt=WPA-EAP
+    eap=PEAP
+    identity="youruserid@ucsd.edu"
+    password="yourpassword"
+    phase1="peapver=0"
+    phase2="auth=MSCHAPV2"
 }
 
 #Then restart networking.
