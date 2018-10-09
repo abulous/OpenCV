@@ -1,10 +1,10 @@
 
 # GET ON UCSD-PROTECTED
-sudo nano /etc/wpa_supplicant/wpa_supplicant.conf 
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 
 network={
-ssid="UCSD-PROTECTED" 
-key_mgmt=WPA-EAP 
+ssid="UCSD-PROTECTED"
+key_mgmt=WPA-EAP
 eap=PEAP
 identity="youruserid@ucsd.edu"
 password="yourpassword"
