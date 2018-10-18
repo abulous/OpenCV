@@ -11,8 +11,10 @@ network={
     phase1="peapver=0"
     phase2="auth=MSCHAPV2"
 }
+#Then restart networking, or reboot.
 
-#Then restart networking.
+# Turn off screensaver
+sudo apt-get install xscreensaver
 
 cat /etc/os-release
 
