@@ -10,7 +10,8 @@ import imutils
 import cv2
 
 # init basic capture stuff
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1) # works for usb webcam
 cap.set(3, 640) # Change Width to 640. The 'set' function retrieves it from the camera you're using.
 cap.set(4, 480) # Change Height to 480
 print(cap.get(3)) # Print Width
@@ -32,7 +33,7 @@ while(True):
         # detect people in the image
         (rects, weights) = hog.detectMultiScale(image, winStride=(4, 4),
                 padding=(8, 8), scale=1.05)
-
+        
         # draw the original bounding boxes
         for (x, y, w, h) in rects:
                 cv2.rectangle(orig, (x, y), (x + w, y + h), (0, 0, 255), 2)

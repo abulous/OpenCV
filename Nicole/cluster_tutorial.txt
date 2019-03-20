@@ -1,3 +1,4 @@
+:q
 Building your own cluster with Raspberry PIs (adapted from the mighty Brett Stalbaum’s tutorial)
 
 This tutorial assumes that you have a fresh installation of Raspbian on Raspberry Pi 3 boards, and that you have them connected to a switch (or router), Access to the internet is also assumed. (Wireless on the Raspberry Pi 3 should be helpful for setup!)
