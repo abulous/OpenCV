@@ -140,3 +140,6 @@ sudo chmod a+rw /dev/media0 # otherwise can't make the adjustments
 uvcdynctrl -d video0 -s "Exposure, Auto" 1
 uvcdynctrl -c, --clist # List available controls
 
+#open seperate terminal window and execute command
+lxterminal --command="/bin/bash -c '/home/pi/<nameOfScript>.sh; read'"
+
