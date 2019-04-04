@@ -81,7 +81,7 @@ Then click on the window of the application that is running and the name and cla
 	<decor>no</decor>  #this removes the title bar
 	<position>
 		<x>0</x>  #this  positions the window in the center of the screen
-		<y>0</y>
+		<y>-240</y> ## there is a white line at the top, therefore change "y" to -240, not zero.
 	</position>
 </application>
 
