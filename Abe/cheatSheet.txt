@@ -148,3 +148,9 @@ sudo cp cv2.so /usr/lib/python3/dist-packages/cv2.so
 #open seperate terminal window and execute command
 lxterminal --command="/bin/bash -c '/home/pi/<nameOfScript>.sh; read'"
 
+# include qttools5-dev and qttools5-dev-tools for dependecy packages for building sc on ubuntu
+sudo apt-get install qttools5-dev
+sudo apt-get install qttools5-dev-tools
+
+
+
